@@ -12,8 +12,6 @@
 @interface BusinessCell()
 
 @property (weak, nonatomic) IBOutlet UIImageView *thumbImageView;
-
-
 @property (weak, nonatomic) IBOutlet UILabel *distanceLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *ratingImageView;
 @property (weak, nonatomic) IBOutlet UILabel *ratingLabel;
@@ -25,7 +23,7 @@
 
 - (void)awakeFromNib {
     // Initialization code
-//    self.nameLabel.preferredMaxLayoutWidth=self.nameLabel.frame.size.width;
+    self.nameLabel.preferredMaxLayoutWidth=self.nameLabel.frame.size.width;
     
 }
 
@@ -36,8 +34,6 @@
 }
 
 -(void)setBusiness:(Business *)business{
-    NSLog(@"Interesting problem 40 BusinessCell");
-    NSLog(@"business name: %@", self.business.name); 
     _business=business;
     
 
@@ -50,13 +46,13 @@
     self.addressLabel.text = self.business.address;
     self.distanceLabel.text = [NSString stringWithFormat:@"%.2f mi", self.business.distance];
     
-    NSLog(@"nameLabel: %@", self.nameLabel.text);
+//    NSLog(@"nameLabel: %@", self.nameLabel.text);
     
 //    self.categoryLabel.text = self.business.categories;
 }
 
-//-(void)layoutSubviews{
-//    [super layoutSubviews];
-//    self.nameLabel.preferredMaxLayoutWidth=self.nameLabel.frame.size.width;
-//}
+-(void)layoutSubviews{
+    [super layoutSubviews];
+    self.nameLabel.preferredMaxLayoutWidth=self.nameLabel.frame.size.width;
+}
 @end

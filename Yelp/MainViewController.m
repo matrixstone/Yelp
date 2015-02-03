@@ -10,13 +10,14 @@
 #import "YelpClient.h"
 #import "Business.h"
 #import "BusinessCell.h"
+#import "FilterViewController.h"
 
-NSString * const kYelpConsumerKey = @"vxKwwcR_NMQ7WaEiQBK_CA";
-NSString * const kYelpConsumerSecret = @"33QCvh5bIF5jIHR5klQr7RtBDhQ";
-NSString * const kYelpToken = @"uRcRswHFYa1VkDrGV6LAW2F8clGh5JHV";
-NSString * const kYelpTokenSecret = @"mqtKIxMIR4iBtBPZCmCLEb-Dz3Y";
+NSString * const kYelpConsumerKey = @"45fcmgyIjxMk-J-5GeTVjQ";
+NSString * const kYelpConsumerSecret = @"qWFkA9aUJps0YSz1RMBaErlcDwY";
+NSString * const kYelpToken = @"jWc_WzCrqpdrMb4B1gx2N7lixEi6msNu";
+NSString * const kYelpTokenSecret = @"5bi4id__4I8wst5mPvXCRdtGb8w";
 
-@interface MainViewController ()<UITableViewDataSource, UITableViewDelegate>
+@interface MainViewController ()<UITableViewDataSource, UITableViewDelegate, FilterViewControllerDelegate>
 
 @property (nonatomic, strong) YelpClient *client;
 @property (nonatomic, strong)  NSArray *businesses;
@@ -34,7 +35,7 @@ NSString * const kYelpTokenSecret = @"mqtKIxMIR4iBtBPZCmCLEb-Dz3Y";
         self.client = [[YelpClient alloc] initWithConsumerKey:kYelpConsumerKey consumerSecret:kYelpConsumerSecret accessToken:kYelpToken accessSecret:kYelpTokenSecret];
         
         [self.client searchWithTerm:@"Thai" success:^(AFHTTPRequestOperation *operation, id response) {
-//            NSLog(@"response: %@", response);
+            NSLog(@"response: %@", response);
             NSArray *businessArray = response[@"businesses"];
             self.businesses = [Business businessWithDictionaries:businessArray];
             
@@ -55,6 +56,7 @@ NSString * const kYelpTokenSecret = @"mqtKIxMIR4iBtBPZCmCLEb-Dz3Y";
     self.tableView.delegate=self;
     
     self.title=@"Yelp";
+    self.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc]initWithTitle:@"Filter" style:UIBarButtonItemStylePlain target:self action:@selector(onFilterButton)];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"BusinessCell" bundle:nil] forCellReuseIdentifier:@"BusinessCell"];
     
@@ -73,14 +75,27 @@ NSString * const kYelpTokenSecret = @"mqtKIxMIR4iBtBPZCmCLEb-Dz3Y";
     return self.businesses.count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    BusinessCell *cell=[tableView dequeueReusableCellWithIdentifier:@"BusinessCell"];
-    NSLog(@"step1");
-    cell.business=self.businesses[.0.row];
-    
-    NSLog(@"Name from the Cell: %@" , cell.business.name);
-    NSLog(@"Name text from the Cell: %@" , cell.nameLabel.text);
+- (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    BusinessCell *cell = [tableView dequeueReusableCellWithIdentifier:@"BusinessCell"];
+    cell.business = self.businesses[indexPath.row];
     return cell;
+}
+
+#pragma mark - Filter delegate methods
+
+-(void) filtersViewController:(FilterViewController *)filterViewController didChangeFilters:(NSDictionary *)filters{
+    NSLog(@"Fire new netwroking event: %@", filters);
+    
+}
+
+
+#pragma mark - Private methods
+
+-(void)onFilterButton{
+    FilterViewController *vc=[[FilterViewController alloc]init];
+    vc.delegate=self;
+    UINavigationController *nvc=[[UINavigationController alloc]initWithRootViewController:vc];
+    [self presentViewController:nvc animated:YES completion:nil];
 }
 
 @end
