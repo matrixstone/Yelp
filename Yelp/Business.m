@@ -14,19 +14,19 @@
     self=[super init];
     
     if(self){
+//        NSLog(@"Printing dictionary: %@", dictionary);
         NSArray *categories = dictionary[@"categories"];
         NSMutableArray *categoryNames = [NSMutableArray array];
         [categories enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             [categoryNames addObject:obj[0]];
         }];
         self.categories = [categoryNames componentsJoinedByString:@", "];
+//        NSLog(@"categories: %@", self.categories);
         self.name = dictionary[@"name"];
-//        NSLog(@"Name from the bussiness: %@", self.name);
-//        NSLog(@"Name: %@", self.name);
         self.imageUrl = dictionary[@"image_url"];
         
-        NSArray *street =[dictionary valueForKey:@"location.address"][0];
-        NSString *neighborhood=[dictionary valueForKeyPath:@"location.neighbortoods"][0];
+        NSArray *street =[[dictionary valueForKey:@"location"] valueForKey:@"address"][0];
+        NSString *neighborhood=[[dictionary valueForKey:@"location"] valueForKey:@"neighborhoods"][0];
         self.address=[NSString stringWithFormat:@"%@, %@", street , neighborhood];
         
 //        
