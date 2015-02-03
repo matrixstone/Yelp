@@ -22,6 +22,7 @@ NSString * const kYelpTokenSecret = @"5bi4id__4I8wst5mPvXCRdtGb8w";
 @property (nonatomic, strong) YelpClient *client;
 @property (nonatomic, strong)  NSArray *businesses;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+-(void)fetchBusinessWithQuery:(NSString *)query params:(NSDictionary *)params;
 
 @end
 
@@ -34,18 +35,23 @@ NSString * const kYelpTokenSecret = @"5bi4id__4I8wst5mPvXCRdtGb8w";
         // You can register for Yelp API keys here: http://www.yelp.com/developers/manage_api_keys
         self.client = [[YelpClient alloc] initWithConsumerKey:kYelpConsumerKey consumerSecret:kYelpConsumerSecret accessToken:kYelpToken accessSecret:kYelpTokenSecret];
         
-        [self.client searchWithTerm:@"Thai" success:^(AFHTTPRequestOperation *operation, id response) {
-            NSLog(@"response: %@", response);
-            NSArray *businessArray = response[@"businesses"];
-            self.businesses = [Business businessWithDictionaries:businessArray];
-            
-            [self.tableView reloadData];
-            
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"error: %@", [error description]);
-        }];
+        [self fetchBusinessWithQuery:@"Resturants" params:nil];
+        
     }
     return self;
+}
+
+-(void)fetchBusinessWithQuery:(NSString *)query params:(NSDictionary *)params{
+    [self.client searchWithTerm:query params:params success:^(AFHTTPRequestOperation *operation, id response) {
+        NSLog(@"response: %@", response);
+        NSArray *businessArray = response[@"businesses"];
+        self.businesses = [Business businessWithDictionaries:businessArray];
+        
+        [self.tableView reloadData];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"error: %@", [error description]);
+    }];
 }
 
 - (void)viewDidLoad
@@ -84,6 +90,7 @@ NSString * const kYelpTokenSecret = @"5bi4id__4I8wst5mPvXCRdtGb8w";
 #pragma mark - Filter delegate methods
 
 -(void) filtersViewController:(FilterViewController *)filterViewController didChangeFilters:(NSDictionary *)filters{
+    [self fetchBusinessWithQuery:@"Resturants" params:filters];
     NSLog(@"Fire new netwroking event: %@", filters);
     
 }
