@@ -23,10 +23,20 @@ NSString * const kYelpTokenSecret = @"5bi4id__4I8wst5mPvXCRdtGb8w";
 @property (nonatomic, strong)  NSArray *businesses;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 -(void)fetchBusinessWithQuery:(NSString *)query params:(NSDictionary *)params;
+@property (nonatomic, strong) BusinessCell *prototypeCell;
 
 @end
 
 @implementation MainViewController
+
+- (BusinessCell *)prototypeCell
+{
+    if (!_prototypeCell)
+    {
+        _prototypeCell = [self.tableView dequeueReusableCellWithIdentifier:@"BusinessCell"];
+    }
+    return _prototypeCell;
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -60,15 +70,22 @@ NSString * const kYelpTokenSecret = @"5bi4id__4I8wst5mPvXCRdtGb8w";
     // Do any additional setup after loading the view from its nib.
     self.tableView.dataSource=self;
     self.tableView.delegate=self;
+    self.tableView.rowHeight=UITableViewAutomaticDimension;
     
     self.title=@"Yelp";
     self.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc]initWithTitle:@"Filter" style:UIBarButtonItemStylePlain target:self action:@selector(onFilterButton)];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didChangePreferredContentSize:)
+                                                 name:UIContentSizeCategoryDidChangeNotification object:nil];
+    
     [self.tableView registerNib:[UINib nibWithNibName:@"BusinessCell" bundle:nil] forCellReuseIdentifier:@"BusinessCell"];
     
-    self.tableView.rowHeight=UITableViewAutomaticDimension;
-    
-    
+}
+
+- (void)didChangePreferredContentSize:(NSNotification *)notification
+{
+    [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -103,6 +120,20 @@ NSString * const kYelpTokenSecret = @"5bi4id__4I8wst5mPvXCRdtGb8w";
     vc.delegate=self;
     UINavigationController *nvc=[[UINavigationController alloc]initWithRootViewController:vc];
     [self presentViewController:nvc animated:YES completion:nil];
+}
+
+//-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+////    [self configureCell:self.prototypeCell forRowAtIndexPath:indexPath];
+//    self.prototypeCell.business = self.businesses[indexPath.row];
+//    [self.prototypeCell layoutIfNeeded];
+//    
+//    CGSize size = [self.prototypeCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+//    return size.height;
+//}
+
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewAutomaticDimension;
 }
 
 @end
