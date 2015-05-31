@@ -9,6 +9,7 @@
 #import "SelectViewController.h"
 
 @interface SelectViewController ()
+@property (weak, nonatomic) IBOutlet UISegmentedControl *selector;
 
 @end
 
@@ -34,4 +35,10 @@
 }
 */
 
+- (IBAction)onSaveButton:(id)sender {
+    int locationIndex=self.selector.selectedSegmentIndex;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setInteger:locationIndex forKey:@"locationIndex"];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 @end

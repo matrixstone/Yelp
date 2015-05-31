@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface SelectViewController : UIViewController
+- (IBAction)onSaveButton:(id)sender;
 
 @end
